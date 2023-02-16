@@ -21,7 +21,7 @@ func GetVersion() (string, string, string) {
 }
 
 type AzureADConfig struct {
-	Tenant       string `description:"AzureAD tenant" kind:"attribute" mode:"normal" readonly:"false" name:"tenat"`
+	Tenant       string `description:"AzureAD tenant" kind:"attribute" mode:"normal" readonly:"false" name:"tenant"`
 	ClientID     string `description:"AzureAD Client ID" kind:"attribute" mode:"normal" readonly:"false" name:"client-id"`
 	ClientSecret string `description:"AzureAD Client Secret" kind:"attribute" mode:"normal" readonly:"false" name:"client-secret"`
 	UserPID      string `description:"AzureAD User PID of the user you want to read" kind:"attribute" mode:"normal" readonly:"false" name:"user-pid"`

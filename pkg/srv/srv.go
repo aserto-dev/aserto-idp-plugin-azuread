@@ -34,24 +34,24 @@ func NewAzureADPlugin() *AzureADPlugin {
 	}
 }
 
-func (s *AzureADPlugin) GetConfig() plugin.Config {
+func (a *AzureADPlugin) GetConfig() plugin.Config {
 	return &config.AzureADConfig{}
 }
 
-func (s *AzureADPlugin) GetVersion() (string, string, string) {
+func (a *AzureADPlugin) GetVersion() (string, string, string) {
 	return config.GetVersion()
 }
 
-func (s *AzureADPlugin) Open(cfg plugin.Config, operation plugin.OperationType) error {
+func (a *AzureADPlugin) Open(cfg plugin.Config, operation plugin.OperationType) error {
 	azureadConfig, ok := cfg.(*config.AzureADConfig)
 	if !ok {
 		return errors.New("invalid config")
 	}
 
-	s.Config = azureadConfig
-	s.page = 0
-	s.finishedRead = false
-	s.op = operation
+	a.Config = azureadConfig
+	a.page = 0
+	a.finishedRead = false
+	a.op = operation
 
 	azureClient, err := azureclient.NewAzureADClient(
 		context.Background(),
@@ -62,21 +62,21 @@ func (s *AzureADPlugin) Open(cfg plugin.Config, operation plugin.OperationType) 
 		return err
 	}
 
-	s.azureClient = azureClient
+	a.azureClient = azureClient
 
 	return nil
 }
 
-func (s *AzureADPlugin) Read() ([]*api.User, error) {
-	if s.finishedRead {
+func (a *AzureADPlugin) Read() ([]*api.User, error) {
+	if a.finishedRead {
 		return nil, io.EOF
 	}
 
 	var errs error
 	var users []*api.User
 
-	if s.Config.UserPID != "" {
-		user, err := s.readByPID(s.Config.UserPID)
+	if a.Config.UserPID != "" {
+		user, err := a.readByPID(a.Config.UserPID)
 		if err != nil {
 			return nil, err
 		}
@@ -84,11 +84,11 @@ func (s *AzureADPlugin) Read() ([]*api.User, error) {
 		return users, nil
 	}
 
-	if s.Config.UserEmail != "" {
-		return s.readByEmail(s.Config.UserEmail)
+	if a.Config.UserEmail != "" {
+		return a.readByEmail(a.Config.UserEmail)
 	}
 
-	aadUsers, err := s.azureClient.ListUsers()
+	aadUsers, err := a.azureClient.ListUsers()
 	if err != nil {
 		return nil, err
 	}
@@ -107,12 +107,14 @@ func (s *AzureADPlugin) Read() ([]*api.User, error) {
 		users = append(users, u)
 	}
 
+	a.finishedRead = true
+
 	return users, errs
 }
 
-func (s *AzureADPlugin) readByPID(id string) (*api.User, error) {
+func (a *AzureADPlugin) readByPID(id string) (*api.User, error) {
 
-	aadUsers, err := s.azureClient.GetUser(id)
+	aadUsers, err := a.azureClient.GetUser(id)
 	if err != nil {
 		return nil, err
 	}
@@ -127,10 +129,10 @@ func (s *AzureADPlugin) readByPID(id string) (*api.User, error) {
 	return nil, fmt.Errorf("failed to get user by pid %s", id)
 }
 
-func (s *AzureADPlugin) readByEmail(email string) ([]*api.User, error) {
+func (a *AzureADPlugin) readByEmail(email string) ([]*api.User, error) {
 	var users []*api.User
 
-	aadUsers, err := s.azureClient.GetUser(email)
+	aadUsers, err := a.azureClient.GetUser(email)
 	if err != nil {
 		return nil, err
 	}
@@ -148,14 +150,14 @@ func (s *AzureADPlugin) readByEmail(email string) ([]*api.User, error) {
 	return users, nil
 }
 
-func (s *AzureADPlugin) Write(user *api.User) error {
+func (a *AzureADPlugin) Write(user *api.User) error {
 	return nil
 }
 
-func (s *AzureADPlugin) Delete(userID string) error {
+func (a *AzureADPlugin) Delete(userID string) error {
 	return nil
 }
 
-func (s *AzureADPlugin) Close() (*plugin.Stats, error) {
+func (a *AzureADPlugin) Close() (*plugin.Stats, error) {
 	return nil, nil
 }

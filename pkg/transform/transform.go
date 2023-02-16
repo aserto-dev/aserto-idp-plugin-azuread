@@ -28,9 +28,8 @@ func Transform(in models.Userable) *api.User {
 	user := api.User{
 		Id:          *in.GetId(),
 		DisplayName: *in.GetDisplayName(),
-		Email:       *in.GetMail(),
-		Picture:     *in.GetPhoto().GetId(),
-		Identities:  make(map[string]*api.IdentitySource),
+		//Picture:     *in.GetPhoto().GetId(),
+		Identities: make(map[string]*api.IdentitySource),
 		Attributes: &api.AttrSet{
 			Properties:  &structpb.Struct{Fields: make(map[string]*structpb.Value)},
 			Roles:       []string{},
@@ -43,24 +42,30 @@ func Transform(in models.Userable) *api.User {
 		},
 	}
 
+	email := in.GetMail()
+	if email != nil {
+		user.Email = *email
+	} else {
+		user.Email = ""
+	}
+
 	user.Identities[*in.GetId()] = &api.IdentitySource{
 		Kind:     api.IdentityKind_IDENTITY_KIND_PID,
 		Provider: Provider,
 		Verified: true,
 	}
 
-	email := *in.GetMail()
-	if email != "" {
-		user.Identities[email] = &api.IdentitySource{
+	if email != nil && *email != "" {
+		user.Identities[*email] = &api.IdentitySource{
 			Kind:     api.IdentityKind_IDENTITY_KIND_EMAIL,
 			Provider: Provider,
 			Verified: true,
 		}
 	}
 
-	phone := *in.GetMobilePhone()
-	if phone != "" {
-		user.Identities[phone] = &api.IdentitySource{
+	phone := in.GetMobilePhone()
+	if phone != nil && *phone != "" {
+		user.Identities[*phone] = &api.IdentitySource{
 			Kind:     api.IdentityKind_IDENTITY_KIND_PHONE,
 			Provider: Provider,
 			Verified: false,

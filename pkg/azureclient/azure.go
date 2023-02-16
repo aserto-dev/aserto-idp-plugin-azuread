@@ -50,35 +50,21 @@ func NewAzureADClient(ctx context.Context, tenant string, clientID string, clien
 }
 
 func (c *AzureADClient) ListUsers() (models.UserCollectionResponseable, error) {
-	var topValue int32 = 25
-	query := adusers.UsersRequestBuilderGetQueryParameters{
-		// Only request specific properties
-		Select: []string{"displayName", "id", "mail"},
-		// Get at most 25 results
-		Top: &topValue,
-		// Sort by display name
-		Orderby: []string{"displayName"},
-	}
-
-	return c.appClient.Users().
-		Get(context.Background(),
-			&adusers.UsersRequestBuilderGetRequestConfiguration{
-				QueryParameters: &query,
-			})
+	return c.listUsers("")
 }
 
 func (c *AzureADClient) GetUser(name string) (models.UserCollectionResponseable, error) {
-	var topValue int32 = 1
-	query := adusers.UsersRequestBuilderGetQueryParameters{
-		// Only request specific properties
-		Select: []string{"displayName", "id", "mail"},
-		// Get at most 1 results
-		Top: &topValue,
-		// Sort by display name
-		Orderby: []string{"displayName"},
-		Filter:  &name,
-	}
+	return c.listUsers(name)
+}
 
+func (c *AzureADClient) listUsers(filter string) (models.UserCollectionResponseable, error) {
+	var topValue int32 = 25
+	query := adusers.UsersRequestBuilderGetQueryParameters{
+		Select:  []string{"displayName", "id", "mail", "createdDateTime", "mobilePhone"},
+		Top:     &topValue,
+		Orderby: []string{"displayName"},
+		Filter:  &filter,
+	}
 	return c.appClient.Users().
 		Get(context.Background(),
 			&adusers.UsersRequestBuilderGetRequestConfiguration{

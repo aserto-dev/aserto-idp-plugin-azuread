@@ -60,7 +60,7 @@ func TestValidateWithInvalidCredentials(t *testing.T) {
 	err := config.Validate(plugin.OperationTypeWrite)
 
 	assert.NotNil(err)
-	assert.Contains(err.Error(), "Internal desc = failed to get AzureAD connection")
+	assert.Contains(err.Error(), "Internal desc = failed to retrieve users from AzureAD")
 }
 
 func TestValidateWithUserIDAndEmail(t *testing.T) {

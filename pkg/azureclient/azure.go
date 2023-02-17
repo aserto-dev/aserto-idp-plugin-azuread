@@ -18,7 +18,7 @@ type AzureADClient struct {
 	appClient              *msgraphsdk.GraphServiceClient
 }
 
-func NewAzureADClient(ctx context.Context, tenant string, clientID string, clientSecret string) (*AzureADClient, error) {
+func NewAzureADClient(ctx context.Context, tenant, clientID, clientSecret string) (*AzureADClient, error) {
 	c := &AzureADClient{}
 
 	credential, err := azidentity.NewClientSecretCredential(tenant, clientID, clientSecret, nil)

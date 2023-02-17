@@ -37,6 +37,8 @@ func CreateTestAzureADUser(id, displayName, email, picture, phoneNo, userName st
 	user.SetId(&id)
 	user.SetDisplayName(&displayName)
 	user.SetMail(&email)
+	t := time.Now()
+	user.SetCreatedDateTime(&t)
 
 	return user
 }

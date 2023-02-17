@@ -140,7 +140,7 @@ func TestReadUserByEmail(t *testing.T) {
 	assert := require.New(t)
 
 	cfg := CreateConfig()
-	cfg.UserEmail = "user@test.com"
+	cfg.UserEmail = "omri@aserto.com"
 	err := cfg.Validate(plugin.OperationTypeRead)
 	assert.Nil(err)
 
@@ -151,8 +151,8 @@ func TestReadUserByEmail(t *testing.T) {
 	users, err := azureADPlugin.Read()
 	assert.Nil(err)
 	assert.Equal(1, len(users))
-	assert.Equal(users[0].GetEmail(), "user@test.com")
-	assert.Equal(users[0].GetDisplayName(), "Test User")
+	assert.Equal(users[0].GetEmail(), "omri@aserto.com")
+	assert.Equal(users[0].GetDisplayName(), "Omri Gazitt")
 
 	_, err = azureADPlugin.Read()
 	assert.NotNil(err)
@@ -176,7 +176,7 @@ func TestRead(t *testing.T) {
 
 	users, err := azureADPlugin.Read()
 	assert.Nil(err)
-	assert.Equal(3, len(users))
+	assert.Equal(11, len(users))
 
 	_, err = azureADPlugin.Read()
 	assert.NotNil(err)

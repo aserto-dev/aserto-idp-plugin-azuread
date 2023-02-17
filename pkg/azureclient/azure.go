@@ -58,10 +58,8 @@ func (c *AzureADClient) GetUser(name string) (models.UserCollectionResponseable,
 }
 
 func (c *AzureADClient) listUsers(filter string) (models.UserCollectionResponseable, error) {
-	var topValue int32 = 25
 	query := adusers.UsersRequestBuilderGetQueryParameters{
 		Select:  []string{"displayName", "id", "mail", "createdDateTime", "mobilePhone"},
-		Top:     &topValue,
 		Orderby: []string{"displayName"},
 		Filter:  &filter,
 	}

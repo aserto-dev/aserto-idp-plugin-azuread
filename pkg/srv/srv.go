@@ -94,15 +94,6 @@ func (a *AzureADPlugin) Read() ([]*api.User, error) {
 	}
 
 	for _, user := range aadUsers.GetValue() {
-		fmt.Printf("User: %s\n", *user.GetDisplayName())
-		fmt.Printf("  ID: %s\n", *user.GetId())
-
-		noEmail := "NO EMAIL"
-		email := user.GetMail()
-		if email == nil {
-			email = &noEmail
-		}
-		fmt.Printf("  Email: %s\n", *email)
 		u := transform.Transform(user)
 		users = append(users, u)
 	}

@@ -60,7 +60,7 @@ func (c *AzureADConfig) Validate(operation plugin.OperationType) error {
 			context.Background(),
 			c.Tenant,
 			c.ClientID,
-			c.ClientSecret)
+			c.RefreshToken)
 	}
 	if err != nil {
 		return status.Errorf(codes.Internal, "failed to connect to AzureAD, %s", err.Error())

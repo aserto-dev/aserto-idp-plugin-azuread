@@ -15,13 +15,15 @@ import (
 
 type RefreshTokenCredential struct {
 	clientID     string
+	clientSecret string
 	refreshToken string
 	tenantID     string
 }
 
-func NewRefreshTokenCredential(ctx context.Context, tenantID, clientID, refreshToken string) (*RefreshTokenCredential, error) {
+func NewRefreshTokenCredential(ctx context.Context, tenantID, clientID, clientSecret, refreshToken string) (*RefreshTokenCredential, error) {
 	c := &RefreshTokenCredential{
 		clientID:     clientID,
+		clientSecret: clientSecret,
 		tenantID:     tenantID,
 		refreshToken: refreshToken,
 	}
@@ -29,15 +31,11 @@ func NewRefreshTokenCredential(ctx context.Context, tenantID, clientID, refreshT
 }
 
 func (c *RefreshTokenCredential) GetToken(ctx context.Context, options policy.TokenRequestOptions) (azcore.AccessToken, error) {
-	return getAccessToken(c.tenantID, c.clientID, c.refreshToken)
-}
-
-func getAccessToken(tenantID string, clientID string, refreshToken string) (azcore.AccessToken, error) {
 	accessToken := azcore.AccessToken{}
 
-	url := "https://login.microsoftonline.com/" + tenantID + "/oauth2/v2.0/token"
-	data := fmt.Sprintf("grant_type=refresh_token&client_id=%s&refresh_token=%s",
-		clientID, refreshToken)
+	url := "https://login.microsoftonline.com/" + c.tenantID + "/oauth2/v2.0/token"
+	data := fmt.Sprintf("grant_type=refresh_token&client_id=%s&client_secret=%s&refresh_token=%s",
+		c.clientID, c.clientSecret, c.refreshToken)
 	payload := strings.NewReader(data)
 
 	// create the request and execute it

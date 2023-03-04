@@ -41,26 +41,27 @@ func (c *AzureADConfig) Validate(operation plugin.OperationType) error {
 		return status.Error(codes.InvalidArgument, "no client id was provided")
 	}
 
-	if c.ClientSecret == "" && c.RefreshToken == "" {
-		return status.Error(codes.InvalidArgument, "neither refresh token nor client secret was provided")
+	if c.ClientSecret == "" {
+		return status.Error(codes.InvalidArgument, "no client secret was provided")
 	}
 
 	if c.UserPID != "" && c.UserEmail != "" {
 		return status.Error(codes.InvalidArgument, "an user PID and an user email were provided; please specify only one")
 	}
 
-	if c.ClientSecret != "" {
-		client, err = azureclient.NewAzureADClientWithSecret(
-			context.Background(),
-			c.Tenant,
-			c.ClientID,
-			c.ClientSecret)
-	} else {
+	if c.RefreshToken != "" {
 		client, err = azureclient.NewAzureADClientWithRefreshToken(
 			context.Background(),
 			c.Tenant,
 			c.ClientID,
+			c.ClientSecret,
 			c.RefreshToken)
+	} else {
+		client, err = azureclient.NewAzureADClient(
+			context.Background(),
+			c.Tenant,
+			c.ClientID,
+			c.ClientSecret)
 	}
 	if err != nil {
 		return status.Errorf(codes.Internal, "failed to connect to AzureAD, %s", err.Error())

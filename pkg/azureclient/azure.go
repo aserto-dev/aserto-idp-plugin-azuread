@@ -20,7 +20,7 @@ type AzureADClient struct {
 	appClient              *msgraphsdk.GraphServiceClient
 }
 
-func NewAzureADClientWithSecret(ctx context.Context, tenant, clientID, clientSecret string) (*AzureADClient, error) {
+func NewAzureADClient(ctx context.Context, tenant, clientID, clientSecret string) (*AzureADClient, error) {
 	c := &AzureADClient{}
 
 	credential, err := azidentity.NewClientSecretCredential(tenant, clientID, clientSecret, nil)
@@ -35,10 +35,10 @@ func NewAzureADClientWithSecret(ctx context.Context, tenant, clientID, clientSec
 	return c, nil
 }
 
-func NewAzureADClientWithRefreshToken(ctx context.Context, tenant, clientID, refreshToken string) (*AzureADClient, error) {
+func NewAzureADClientWithRefreshToken(ctx context.Context, tenant, clientID, clientSecret, refreshToken string) (*AzureADClient, error) {
 	c := &AzureADClient{}
 
-	credential, err := NewRefreshTokenCredential(ctx, tenant, clientID, refreshToken)
+	credential, err := NewRefreshTokenCredential(ctx, tenant, clientID, clientSecret, refreshToken)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to create Refresh Token credential: %s", err.Error())
 	}

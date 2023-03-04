@@ -54,31 +54,28 @@ func (a *AzureADPlugin) Open(cfg plugin.Config, operation plugin.OperationType) 
 	a.op = operation
 
 	var err error
-	if azureadConfig.ClientSecret != "" {
-		a.azureClient, err = azureclient.NewAzureADClientWithSecret(
-			context.Background(),
-			azureadConfig.Tenant,
-			azureadConfig.ClientID,
-			azureadConfig.ClientSecret)
-		if err != nil {
-			return err
-		}
-		return nil
-	}
-
 	if azureadConfig.RefreshToken != "" {
 		a.azureClient, err = azureclient.NewAzureADClientWithRefreshToken(
 			context.Background(),
 			azureadConfig.Tenant,
 			azureadConfig.ClientID,
+			azureadConfig.ClientSecret,
+			azureadConfig.RefreshToken)
+		if err != nil {
+			return err
+		}
+		return nil
+	} else {
+		a.azureClient, err = azureclient.NewAzureADClient(
+			context.Background(),
+			azureadConfig.Tenant,
+			azureadConfig.ClientID,
 			azureadConfig.ClientSecret)
 		if err != nil {
 			return err
 		}
 		return nil
 	}
-
-	return errors.New("invalid config: neither secret nor refresh token provided")
 }
 
 func (a *AzureADPlugin) Read() ([]*api.User, error) {

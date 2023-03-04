@@ -24,11 +24,14 @@ type AzureADConfig struct {
 	Tenant       string `description:"AzureAD tenant" kind:"attribute" mode:"normal" readonly:"false" name:"tenant"`
 	ClientID     string `description:"AzureAD Client ID" kind:"attribute" mode:"normal" readonly:"false" name:"client-id"`
 	ClientSecret string `description:"AzureAD Client Secret" kind:"attribute" mode:"normal" readonly:"false" name:"client-secret"`
+	RefreshToken string `description:"AzureAD Refresh Token" kind:"attribute" mode:"normal" readonly:"false" name:"refresh-token"`
 	UserPID      string `description:"AzureAD User PID of the user you want to read" kind:"attribute" mode:"normal" readonly:"false" name:"user-pid"`
 	UserEmail    string `description:"AzureAD User email of the user you want to read" kind:"attribute" mode:"normal" readonly:"false" name:"user-email"`
 }
 
 func (c *AzureADConfig) Validate(operation plugin.OperationType) error {
+	var client *azureclient.AzureADClient
+	var err error
 
 	if c.Tenant == "" {
 		return status.Error(codes.InvalidArgument, "no tenant was provided")
@@ -38,20 +41,27 @@ func (c *AzureADConfig) Validate(operation plugin.OperationType) error {
 		return status.Error(codes.InvalidArgument, "no client id was provided")
 	}
 
-	if c.ClientSecret == "" {
-		return status.Error(codes.InvalidArgument, "no client secret was provided")
+	if c.ClientSecret == "" && c.RefreshToken == "" {
+		return status.Error(codes.InvalidArgument, "neither refresh token nor client secret was provided")
 	}
 
 	if c.UserPID != "" && c.UserEmail != "" {
 		return status.Error(codes.InvalidArgument, "an user PID and an user email were provided; please specify only one")
 	}
 
-	client, err := azureclient.NewAzureADClient(
-		context.Background(),
-		c.Tenant,
-		c.ClientID,
-		c.ClientSecret)
-
+	if c.ClientSecret != "" {
+		client, err = azureclient.NewAzureADClientWithSecret(
+			context.Background(),
+			c.Tenant,
+			c.ClientID,
+			c.ClientSecret)
+	} else {
+		client, err = azureclient.NewAzureADClientWithRefreshToken(
+			context.Background(),
+			c.Tenant,
+			c.ClientID,
+			c.ClientSecret)
+	}
 	if err != nil {
 		return status.Errorf(codes.Internal, "failed to connect to AzureAD, %s", err.Error())
 	}

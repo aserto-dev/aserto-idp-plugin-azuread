@@ -3,6 +3,7 @@ module github.com/aserto-dev/aserto-idp-plugin-azuread
 go 1.19
 
 require (
+	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.3.1
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.2.1
 	github.com/aserto-dev/go-grpc v0.8.12
 	github.com/aserto-dev/go-utils v0.8.5
@@ -19,7 +20,6 @@ require (
 )
 
 require (
-	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.3.1 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/internal v1.1.2 // indirect
 	github.com/AzureAD/microsoft-authentication-library-for-go v0.8.1 // indirect
 	github.com/Masterminds/semver v1.5.0 // indirect

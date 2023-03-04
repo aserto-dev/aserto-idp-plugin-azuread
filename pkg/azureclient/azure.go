@@ -6,6 +6,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	auth "github.com/microsoft/kiota-authentication-azure-go"
 	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
@@ -15,10 +16,11 @@ import (
 
 type AzureADClient struct {
 	clientSecretCredential *azidentity.ClientSecretCredential
+	refreshTokenCredential *RefreshTokenCredential
 	appClient              *msgraphsdk.GraphServiceClient
 }
 
-func NewAzureADClient(ctx context.Context, tenant, clientID, clientSecret string) (*AzureADClient, error) {
+func NewAzureADClientWithSecret(ctx context.Context, tenant, clientID, clientSecret string) (*AzureADClient, error) {
 	c := &AzureADClient{}
 
 	credential, err := azidentity.NewClientSecretCredential(tenant, clientID, clientSecret, nil)
@@ -26,26 +28,25 @@ func NewAzureADClient(ctx context.Context, tenant, clientID, clientSecret string
 		return nil, status.Errorf(codes.Internal, "failed to create an Azure secret credential: %s", err.Error())
 	}
 
-	c.clientSecretCredential = credential
-
-	// Create an auth provider using the credential
-	authProvider, err := auth.NewAzureIdentityAuthenticationProviderWithScopes(c.clientSecretCredential, []string{
-		"https://graph.microsoft.com/.default",
-	})
+	c.appClient, err = getAppClient(credential)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to create Azure identity provider: %s", err.Error())
+		return nil, err
+	}
+	return c, nil
+}
+
+func NewAzureADClientWithRefreshToken(ctx context.Context, tenant, clientID, refreshToken string) (*AzureADClient, error) {
+	c := &AzureADClient{}
+
+	credential, err := NewRefreshTokenCredential(ctx, tenant, clientID, refreshToken)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to create Refresh Token credential: %s", err.Error())
 	}
 
-	// Create a request adapter using the auth provider
-	adapter, err := msgraphsdk.NewGraphRequestAdapter(authProvider)
+	c.appClient, err = getAppClient(credential)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to create Azure AD Graph request adapter: %s", err.Error())
+		return nil, err
 	}
-
-	// Create a Graph client using request adapter
-	client := msgraphsdk.NewGraphServiceClient(adapter)
-	c.appClient = client
-
 	return c, nil
 }
 
@@ -68,4 +69,23 @@ func (c *AzureADClient) listUsers(filter string) (models.UserCollectionResponsea
 			&adusers.UsersRequestBuilderGetRequestConfiguration{
 				QueryParameters: &query,
 			})
+}
+
+func getAppClient(credential azcore.TokenCredential) (*msgraphsdk.GraphServiceClient, error) {
+	authProvider, err := auth.NewAzureIdentityAuthenticationProviderWithScopes(credential, []string{
+		"https://graph.microsoft.com/.default",
+	})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to create Azure identity provider: %s", err.Error())
+	}
+
+	// Create a request adapter using the auth provider
+	adapter, err := msgraphsdk.NewGraphRequestAdapter(authProvider)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to create Azure AD Graph request adapter: %s", err.Error())
+	}
+
+	// Create a Graph client using request adapter
+	client := msgraphsdk.NewGraphServiceClient(adapter)
+	return client, nil
 }

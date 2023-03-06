@@ -15,9 +15,7 @@ import (
 )
 
 type AzureADClient struct {
-	clientSecretCredential *azidentity.ClientSecretCredential
-	refreshTokenCredential *RefreshTokenCredential
-	appClient              *msgraphsdk.GraphServiceClient
+	appClient *msgraphsdk.GraphServiceClient
 }
 
 func NewAzureADClient(ctx context.Context, tenant, clientID, clientSecret string) (*AzureADClient, error) {

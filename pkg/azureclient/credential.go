@@ -11,6 +11,8 @@ import (
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/policy"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type RefreshTokenCredential struct {
@@ -57,9 +59,15 @@ func (c *RefreshTokenCredential) GetToken(ctx context.Context, options policy.To
 		return accessToken, err
 	}
 
+	// check for error
+	if responseData["error_description"] != nil {
+		errorMessage := responseData["error_description"].(string)
+		return accessToken, status.Error(codes.InvalidArgument, errorMessage)
+	}
+
 	// retrieve the access token and expiration
 	accessToken.Token = responseData["access_token"].(string)
-	expiresIn := responseData["expires_in"].(int)
+	expiresIn := int(responseData["expires_in"].(float64))
 	accessToken.ExpiresOn = time.Now().Add(time.Second * time.Duration(expiresIn))
 	return accessToken, nil
 }

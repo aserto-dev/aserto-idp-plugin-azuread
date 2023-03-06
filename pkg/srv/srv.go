@@ -12,7 +12,6 @@ import (
 	"github.com/aserto-dev/aserto-idp-plugin-azuread/pkg/transform"
 	api "github.com/aserto-dev/go-grpc/aserto/api/v1"
 	"github.com/aserto-dev/idp-plugin-sdk/plugin"
-	"gopkg.in/auth0.v5/management"
 )
 
 type AzureADPlugin struct {
@@ -21,7 +20,6 @@ type AzureADPlugin struct {
 	page         int
 	finishedRead bool
 	totalSize    int64
-	jobs         []management.Job
 	users        []map[string]interface{}
 	connectionID string
 	wg           sync.WaitGroup

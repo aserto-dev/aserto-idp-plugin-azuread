@@ -43,6 +43,10 @@ func Transform(in models.Userable) *api.User {
 	}
 
 	email := in.GetMail()
+	if email == nil {
+		email = in.GetUserPrincipalName()
+	}
+
 	if email != nil {
 		user.Email = *email
 	} else {

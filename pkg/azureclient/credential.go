@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 	"time"
@@ -51,7 +51,7 @@ func (c *RefreshTokenCredential) GetToken(ctx context.Context, options policy.To
 	// process the response
 	defer res.Body.Close()
 	var responseData map[string]interface{}
-	body, _ := ioutil.ReadAll(res.Body)
+	body, _ := io.ReadAll(res.Body)
 
 	// unmarshal the json into a string map
 	err = json.Unmarshal(body, &responseData)

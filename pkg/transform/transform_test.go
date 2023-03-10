@@ -29,5 +29,4 @@ func TestTransform(t *testing.T) {
 	assert.Equal("1", apiUser.Id, "should correctly populate the id")
 	assert.Equal("Name", apiUser.DisplayName, "should correctly detect the displayname")
 	assert.Equal("email", apiUser.Email, "should correctly populate the email")
-	// assert.Equal(4, len(apiUser.Identities))
 }

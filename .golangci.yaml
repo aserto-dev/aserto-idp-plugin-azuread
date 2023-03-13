@@ -118,6 +118,6 @@ issues:
         - gocritic
 
 run:
-  timeout: 2m
+  timeout: 10m
   skip-dirs:
     - pkg/testharness/testdata

@@ -2,6 +2,7 @@ package azureclient
 
 import (
 	"context"
+	"fmt"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -52,15 +53,31 @@ func (c *AzureADClient) ListUsers() (models.UserCollectionResponseable, error) {
 	return c.listUsers("")
 }
 
-func (c *AzureADClient) GetUser(name string) (models.UserCollectionResponseable, error) {
-	return c.listUsers(name)
+func (c *AzureADClient) GetUserByID(id string) (models.UserCollectionResponseable, error) {
+	filter := fmt.Sprintf("id eq '%s'", id)
+	return c.listUsers(filter)
+}
+
+func (c *AzureADClient) GetUserByEmail(email string) (models.UserCollectionResponseable, error) {
+	filter := fmt.Sprintf("mail eq '%s'", email)
+
+	aadUsers, err := c.listUsers(filter)
+	if err != nil {
+		return aadUsers, err
+	}
+
+	azureadUsers := aadUsers.GetValue()
+	if len(azureadUsers) < 1 {
+		filter := fmt.Sprintf("userPrincipalName eq '%s'", email)
+		return c.listUsers(filter)
+	}
+	return aadUsers, err
 }
 
 func (c *AzureADClient) listUsers(filter string) (models.UserCollectionResponseable, error) {
 	query := adusers.UsersRequestBuilderGetQueryParameters{
-		Select:  []string{"displayName", "id", "mail", "createdDateTime", "mobilePhone"},
-		Orderby: []string{"displayName"},
-		Filter:  &filter,
+		Select: []string{"displayName", "id", "mail", "createdDateTime", "mobilePhone", "userPrincipalName"},
+		Filter: &filter,
 	}
 	return c.appClient.Users().
 		Get(context.Background(),

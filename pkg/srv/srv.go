@@ -59,21 +59,15 @@ func (a *AzureADPlugin) Open(cfg plugin.Config, operation plugin.OperationType) 
 			azureadConfig.ClientID,
 			azureadConfig.ClientSecret,
 			azureadConfig.RefreshToken)
-		if err != nil {
-			return err
-		}
-		return nil
-	} else {
-		a.azureClient, err = azureclient.NewAzureADClient(
-			context.Background(),
-			azureadConfig.Tenant,
-			azureadConfig.ClientID,
-			azureadConfig.ClientSecret)
-		if err != nil {
-			return err
-		}
-		return nil
+		return err
 	}
+
+	a.azureClient, err = azureclient.NewAzureADClient(
+		context.Background(),
+		azureadConfig.Tenant,
+		azureadConfig.ClientID,
+		azureadConfig.ClientSecret)
+	return err
 }
 
 func (a *AzureADPlugin) Read() ([]*api.User, error) {
@@ -114,25 +108,24 @@ func (a *AzureADPlugin) Read() ([]*api.User, error) {
 
 func (a *AzureADPlugin) readByPID(id string) (*api.User, error) {
 
-	aadUsers, err := a.azureClient.GetUser(id)
+	aadUsers, err := a.azureClient.GetUserByID(id)
+	a.finishedRead = true
 	if err != nil {
 		return nil, err
 	}
 
-	for _, user := range aadUsers.GetValue() {
-		if user == nil {
-			return nil, fmt.Errorf("failed to get user by pid %s", id)
-		}
-		return transform.Transform(user), nil
+	users := aadUsers.GetValue()
+	if len(users) == 0 {
+		return nil, fmt.Errorf("failed to get user by pid %s", id)
 	}
-
-	return nil, fmt.Errorf("failed to get user by pid %s", id)
+	return transform.Transform(users[0]), nil
 }
 
 func (a *AzureADPlugin) readByEmail(email string) ([]*api.User, error) {
 	var users []*api.User
 
-	aadUsers, err := a.azureClient.GetUser(email)
+	aadUsers, err := a.azureClient.GetUserByEmail(email)
+	a.finishedRead = true
 	if err != nil {
 		return nil, err
 	}

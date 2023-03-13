@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"sync"
 
 	"github.com/aserto-dev/aserto-idp-plugin-azuread/pkg/azureclient"
 	"github.com/aserto-dev/aserto-idp-plugin-azuread/pkg/config"
@@ -19,10 +18,6 @@ type AzureADPlugin struct {
 	azureClient  *azureclient.AzureADClient
 	page         int
 	finishedRead bool
-	totalSize    int64
-	users        []map[string]interface{}
-	connectionID string
-	wg           sync.WaitGroup
 	op           plugin.OperationType
 }
 

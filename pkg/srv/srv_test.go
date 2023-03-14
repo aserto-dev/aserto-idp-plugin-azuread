@@ -1,10 +1,11 @@
-package srv
+package srv_test
 
 import (
 	"io"
 	"testing"
 
 	"github.com/aserto-dev/aserto-idp-plugin-azuread/pkg/config"
+	"github.com/aserto-dev/aserto-idp-plugin-azuread/pkg/srv"
 	azureADTestUtils "github.com/aserto-dev/aserto-idp-plugin-azuread/pkg/testutils"
 	"github.com/aserto-dev/go-grpc/aserto/api/v1"
 	"github.com/aserto-dev/idp-plugin-sdk/plugin"
@@ -27,7 +28,7 @@ func TestOpen(t *testing.T) {
 	err := cfg.Validate(plugin.OperationTypeRead)
 	assert.Nil(err)
 
-	azureADPlugin := NewAzureADPlugin()
+	azureADPlugin := srv.NewAzureADPlugin()
 	err = azureADPlugin.Open(&cfg, plugin.OperationTypeRead)
 	assert.Nil(err)
 
@@ -45,7 +46,7 @@ func TestWrite(t *testing.T) {
 	err := cfg.Validate(plugin.OperationTypeWrite)
 	assert.Nil(err)
 
-	azureADPlugin := NewAzureADPlugin()
+	azureADPlugin := srv.NewAzureADPlugin()
 	err = azureADPlugin.Open(&cfg, plugin.OperationTypeWrite)
 	assert.Nil(err)
 
@@ -69,7 +70,7 @@ func TestReadInvalidUserID(t *testing.T) {
 	err := cfg.Validate(plugin.OperationTypeRead)
 	assert.Nil(err)
 
-	azureADPlugin := NewAzureADPlugin()
+	azureADPlugin := srv.NewAzureADPlugin()
 	err = azureADPlugin.Open(&cfg, plugin.OperationTypeRead)
 	assert.Nil(err)
 
@@ -95,7 +96,7 @@ func TestReadUserByID(t *testing.T) {
 	err := cfg.Validate(plugin.OperationTypeRead)
 	assert.Nil(err)
 
-	azureADPlugin := NewAzureADPlugin()
+	azureADPlugin := srv.NewAzureADPlugin()
 	err = azureADPlugin.Open(&cfg, plugin.OperationTypeRead)
 	assert.Nil(err)
 
@@ -122,7 +123,7 @@ func TestReadInvalidUserEmail(t *testing.T) {
 	err := cfg.Validate(plugin.OperationTypeRead)
 	assert.Nil(err)
 
-	azureADPlugin := NewAzureADPlugin()
+	azureADPlugin := srv.NewAzureADPlugin()
 	err = azureADPlugin.Open(&cfg, plugin.OperationTypeRead)
 	assert.Nil(err)
 
@@ -147,7 +148,7 @@ func TestReadUserByEmail(t *testing.T) {
 	err := cfg.Validate(plugin.OperationTypeRead)
 	assert.Nil(err)
 
-	azureADPlugin := NewAzureADPlugin()
+	azureADPlugin := srv.NewAzureADPlugin()
 	err = azureADPlugin.Open(&cfg, plugin.OperationTypeRead)
 	assert.Nil(err)
 
@@ -173,7 +174,7 @@ func TestRead(t *testing.T) {
 	err := cfg.Validate(plugin.OperationTypeRead)
 	assert.Nil(err)
 
-	azureADPlugin := NewAzureADPlugin()
+	azureADPlugin := srv.NewAzureADPlugin()
 	err = azureADPlugin.Open(&cfg, plugin.OperationTypeRead)
 	assert.Nil(err)
 
@@ -198,7 +199,7 @@ func TestDelete(t *testing.T) {
 	err := cfg.Validate(plugin.OperationTypeRead)
 	assert.Nil(err)
 
-	azureADPlugin := NewAzureADPlugin()
+	azureADPlugin := srv.NewAzureADPlugin()
 	err = azureADPlugin.Open(&cfg, plugin.OperationTypeRead)
 	assert.Nil(err)
 

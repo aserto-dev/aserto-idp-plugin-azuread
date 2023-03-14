@@ -41,7 +41,11 @@ func (c *RefreshTokenCredential) GetToken(ctx context.Context, options policy.To
 	payload := strings.NewReader(data)
 
 	// create the request and execute it
-	req, _ := http.NewRequest("POST", url, payload)
+	req, err := http.NewRequestWithContext(ctx, "POST", url, payload)
+	if err != nil {
+		return accessToken, err
+	}
+
 	req.Header.Add("content-type", "application/x-www-form-urlencoded")
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {

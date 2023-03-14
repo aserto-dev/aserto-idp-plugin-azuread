@@ -1,21 +1,22 @@
-package config
+package config_test
 
 import (
 	"testing"
 
+	"github.com/aserto-dev/aserto-idp-plugin-azuread/pkg/config"
 	"github.com/aserto-dev/idp-plugin-sdk/plugin"
 	"github.com/stretchr/testify/require"
 )
 
 func TestValidateWithEmptyTenant(t *testing.T) {
 	assert := require.New(t)
-	config := AzureADConfig{
+	cfg := config.AzureADConfig{
 		Tenant:       "",
 		ClientID:     "id",
 		ClientSecret: "secret",
 	}
 
-	err := config.Validate(plugin.OperationTypeRead)
+	err := cfg.Validate(plugin.OperationTypeRead)
 
 	assert.NotNil(err)
 	assert.Equal("rpc error: code = InvalidArgument desc = no tenant was provided", err.Error())
@@ -23,13 +24,13 @@ func TestValidateWithEmptyTenant(t *testing.T) {
 
 func TestValidateWithEmptyClientID(t *testing.T) {
 	assert := require.New(t)
-	config := AzureADConfig{
+	cfg := config.AzureADConfig{
 		Tenant:       "tenant",
 		ClientID:     "",
 		ClientSecret: "secret",
 	}
 
-	err := config.Validate(plugin.OperationTypeRead)
+	err := cfg.Validate(plugin.OperationTypeRead)
 
 	assert.NotNil(err)
 	assert.Equal("rpc error: code = InvalidArgument desc = no client id was provided", err.Error())
@@ -37,13 +38,13 @@ func TestValidateWithEmptyClientID(t *testing.T) {
 
 func TestValidateWithEmptyClientSecret(t *testing.T) {
 	assert := require.New(t)
-	config := AzureADConfig{
+	cfg := config.AzureADConfig{
 		Tenant:       "tenant",
 		ClientID:     "id",
 		ClientSecret: "",
 	}
 
-	err := config.Validate(plugin.OperationTypeRead)
+	err := cfg.Validate(plugin.OperationTypeRead)
 
 	assert.NotNil(err)
 	assert.Equal("rpc error: code = InvalidArgument desc = no client secret was provided", err.Error())
@@ -51,13 +52,13 @@ func TestValidateWithEmptyClientSecret(t *testing.T) {
 
 func TestValidateWithInvalidCredentials(t *testing.T) {
 	assert := require.New(t)
-	config := AzureADConfig{
+	cfg := config.AzureADConfig{
 		Tenant:       "tenant",
 		ClientID:     "id",
 		ClientSecret: "secret",
 	}
 
-	err := config.Validate(plugin.OperationTypeWrite)
+	err := cfg.Validate(plugin.OperationTypeWrite)
 
 	assert.NotNil(err)
 	assert.Contains(err.Error(), "Internal desc = failed to retrieve users from AzureAD")
@@ -65,7 +66,7 @@ func TestValidateWithInvalidCredentials(t *testing.T) {
 
 func TestValidateWithUserIDAndEmail(t *testing.T) {
 	assert := require.New(t)
-	config := AzureADConfig{
+	cfg := config.AzureADConfig{
 		Tenant:       "tenant",
 		ClientID:     "id",
 		ClientSecret: "secret",
@@ -73,7 +74,7 @@ func TestValidateWithUserIDAndEmail(t *testing.T) {
 		UserEmail:    "test@email.com",
 	}
 
-	err := config.Validate(plugin.OperationTypeWrite)
+	err := cfg.Validate(plugin.OperationTypeWrite)
 
 	assert.NotNil(err)
 	assert.Contains(err.Error(), "rpc error: code = InvalidArgument desc = an user PID and an user email were provided; please specify only one")
@@ -81,13 +82,13 @@ func TestValidateWithUserIDAndEmail(t *testing.T) {
 
 func TestDescription(t *testing.T) {
 	assert := require.New(t)
-	config := AzureADConfig{
+	cfg := config.AzureADConfig{
 		Tenant:       "tenant",
 		ClientID:     "id",
 		ClientSecret: "secret",
 	}
 
-	description := config.Description()
+	description := cfg.Description()
 
 	assert.Equal("AzureAD plugin", description)
 }

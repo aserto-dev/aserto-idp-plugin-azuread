@@ -36,6 +36,7 @@ archives:
       - LICENSE
       - README.md
     name_template: "aserto-idp-plugin-azuread{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    rlcp: true
 
 checksum:
   name_template: "checksums.txt"

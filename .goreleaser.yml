@@ -2,7 +2,7 @@ before:
   hooks:
 
 builds:
-  - id: aserto-idp-plugin-azuread
+  - id: aserto-idp-plugin-azuread-amd64
     main: ./cmd/aserto-idp-plugin-azuread
     binary: aserto-idp-plugin-azuread
     goos:
@@ -11,12 +11,26 @@ builds:
       - windows
     goarch:
       - amd64
+    env:
+      - CGO_ENABLED=0
+    ldflags:
+      - -s
+      - -w
+      - -X github.com/aserto-dev/aserto-idp-plugin-azuread/pkg/config.ver={{.Version}}
+      - -X github.com/aserto-dev/aserto-idp-plugin-azuread/pkg/config.commit={{.ShortCommit}}
+      - -X github.com/aserto-dev/aserto-idp-plugin-azuread/pkg/config.date={{.Date}}
+    mod_timestamp: "{{ .CommitTimestamp }}"
+
+  - id: aserto-idp-plugin-azuread-arm64
+    main: ./cmd/aserto-idp-plugin-azuread
+    binary: aserto-idp-plugin-azuread
+    goos:
+      - darwin
+      - linux
+    goarch:
       - arm64
     env:
       - CGO_ENABLED=0
-    ignore:
-      - goos: windows
-        goarch: arm64
     ldflags:
       - -s
       - -w

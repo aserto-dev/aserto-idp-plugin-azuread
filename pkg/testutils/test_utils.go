@@ -3,8 +3,8 @@ package testutils
 import (
 	"time"
 
+	"github.com/aserto-dev/aserto-idp-plugin-azuread/pkg/msgraph/models"
 	api "github.com/aserto-dev/go-grpc/aserto/api/v1"
-	"github.com/microsoftgraph/msgraph-sdk-go/models"
 	"google.golang.org/protobuf/types/known/structpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )

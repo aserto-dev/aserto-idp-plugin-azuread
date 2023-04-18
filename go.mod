@@ -10,9 +10,14 @@ require (
 	github.com/aserto-dev/go-grpc v0.8.56
 	github.com/aserto-dev/idp-plugin-sdk v0.8.2
 	github.com/aserto-dev/testutil v0.0.4
+	github.com/google/uuid v1.3.0
 	github.com/magefile/mage v1.14.0
+	github.com/microsoft/kiota-abstractions-go v0.19.0
 	github.com/microsoft/kiota-authentication-azure-go v0.6.0
-	github.com/microsoftgraph/msgraph-sdk-go v0.58.0
+	github.com/microsoft/kiota-http-go v0.16.1
+	github.com/microsoft/kiota-serialization-form-go v0.9.0
+	github.com/microsoft/kiota-serialization-json-go v0.9.0
+	github.com/microsoft/kiota-serialization-text-go v0.7.0
 	github.com/stretchr/testify v1.8.2
 	google.golang.org/grpc v1.53.0
 	google.golang.org/protobuf v1.29.1
@@ -29,7 +34,7 @@ require (
 	github.com/aserto-dev/clui v0.8.1 // indirect
 	github.com/aserto-dev/logger v0.0.3 // indirect
 	github.com/aserto-dev/mage-loot v0.8.13 // indirect
-	github.com/cjlapao/common-go v0.0.38 // indirect
+	github.com/cjlapao/common-go v0.0.39 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fatih/color v1.14.1 // indirect
 	github.com/go-logr/logr v1.2.3 // indirect
@@ -39,7 +44,6 @@ require (
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/go-github/v43 v43.0.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
-	github.com/google/uuid v1.3.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.15.2 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-hclog v1.4.0 // indirect
@@ -52,12 +56,6 @@ require (
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.17 // indirect
 	github.com/mattn/go-runewidth v0.0.13 // indirect
-	github.com/microsoft/kiota-abstractions-go v0.17.2 // indirect
-	github.com/microsoft/kiota-http-go v0.16.0 // indirect
-	github.com/microsoft/kiota-serialization-form-go v0.9.0 // indirect
-	github.com/microsoft/kiota-serialization-json-go v0.8.2 // indirect
-	github.com/microsoft/kiota-serialization-text-go v0.7.0 // indirect
-	github.com/microsoftgraph/msgraph-sdk-go-core v0.34.1 // indirect
 	github.com/mitchellh/go-testing-interface v1.14.1 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect

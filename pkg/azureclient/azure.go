@@ -9,14 +9,15 @@ import (
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
+	msgraphsdk "github.com/aserto-dev/aserto-idp-plugin-azuread/pkg/msgraph"
+	"github.com/aserto-dev/aserto-idp-plugin-azuread/pkg/msgraph/models"
+	adusers "github.com/aserto-dev/aserto-idp-plugin-azuread/pkg/msgraph/users"
 	auth "github.com/microsoft/kiota-authentication-azure-go"
-	msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
-	"github.com/microsoftgraph/msgraph-sdk-go/models"
-	adusers "github.com/microsoftgraph/msgraph-sdk-go/users"
+	http "github.com/microsoft/kiota-http-go"
 )
 
 type AzureADClient struct {
-	appClient *msgraphsdk.GraphServiceClient
+	appClient *msgraphsdk.Msgraph
 }
 
 func NewAzureADClient(ctx context.Context, tenant, clientID, clientSecret string) (*AzureADClient, error) {
@@ -86,7 +87,7 @@ func (c *AzureADClient) listUsers(filter string) (models.UserCollectionResponsea
 			})
 }
 
-func getAppClient(credential azcore.TokenCredential) (*msgraphsdk.GraphServiceClient, error) {
+func getAppClient(credential azcore.TokenCredential) (*msgraphsdk.Msgraph, error) {
 	authProvider, err := auth.NewAzureIdentityAuthenticationProviderWithScopes(credential, []string{
 		"https://graph.microsoft.com/.default",
 	})
@@ -95,12 +96,12 @@ func getAppClient(credential azcore.TokenCredential) (*msgraphsdk.GraphServiceCl
 	}
 
 	// Create a request adapter using the auth provider
-	adapter, err := msgraphsdk.NewGraphRequestAdapter(authProvider)
+	adapter, err := http.NewNetHttpRequestAdapter(authProvider)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to create Azure AD Graph request adapter: %s", err.Error())
 	}
 
 	// Create a Graph client using request adapter
-	client := msgraphsdk.NewGraphServiceClient(adapter)
+	client := msgraphsdk.NewMsgraph(adapter)
 	return client, nil
 }

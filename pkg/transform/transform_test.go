@@ -4,9 +4,9 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/aserto-dev/aserto-idp-plugin-azuread/pkg/msgraph/models"
 	azureADTestUtils "github.com/aserto-dev/aserto-idp-plugin-azuread/pkg/testutils"
 	"github.com/aserto-dev/aserto-idp-plugin-azuread/pkg/transform"
-	"github.com/microsoftgraph/msgraph-sdk-go/models"
 	"github.com/stretchr/testify/require"
 )
 

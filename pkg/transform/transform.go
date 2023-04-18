@@ -5,7 +5,7 @@ import (
 	"google.golang.org/protobuf/types/known/structpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	"github.com/microsoftgraph/msgraph-sdk-go/models"
+	"github.com/aserto-dev/aserto-idp-plugin-azuread/pkg/msgraph/models"
 )
 
 const (
